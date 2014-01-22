@@ -63,26 +63,28 @@ void setup()
   pinMode(GREEN_PIN, OUTPUT);
   pinMode(BLUE_PIN, OUTPUT);
   Serial.begin(9600);
+
 }
 
 
 void loop()
 {
   float sensorValue;
-  float voltage;
+  float voltageCtrl;
   sensorValue = analogRead(VOLTAGE_IN);
-  voltage = sensorValue * (5.0/1023.0);
-  Serial.println(voltage);
+  voltageCtrl = sensorValue * (5.0/1023.0);
+  Serial.println(voltageCtrl);
 
-
-  if(voltage >= 4.5)
+  
+  
+  if(voltageCtrl >= 4.5)
   {
     // Green (turn just the green LED on):
     digitalWrite(RED_PIN, LOW);
     digitalWrite(GREEN_PIN, HIGH);
     digitalWrite(BLUE_PIN, HIGH);
   }
-  else if(voltage < 4.5 && voltage >= 3.5)
+  else if(voltageCtrl < 4.5 && voltageCtrl >= 3.5)
   {
     digitalWrite(RED_PIN, LOW);
     digitalWrite(GREEN_PIN, HIGH);
