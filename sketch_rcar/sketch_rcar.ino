@@ -4,6 +4,7 @@
 #include <Servo.h>
 
 int SERVO_CTRL = 9;
+int MOTOR_CTRL = 11;
 int S_STATE = 0; // serial state. hold incoming data
 int S_FLAG = 0; // Serial Flag to denote transmission
 char sbuffer[4]; // Serial read buffer
@@ -17,24 +18,22 @@ void setup(){
   myservo.attach(SERVO_CTRL);
   myservo.write(90); // set servo to start position
   Serial.begin(9600); // default serial baud rate
+  
 }
 
 
 
 void loop(){
   
-  //flush input buffer
-  memset(sbuffer, 0, sizeof(sbuffer));
   //if some data is sent, read it and save it in the state variable
   if(Serial.available() > 0){
     Serial.readBytes(sbuffer, sizeof(sbuffer));
   }
-  delay(1000);
+  delay(500);
   
   if(sbuffer){
    Serial.print("Blue RX: ");
    Serial.println(sbuffer);
-   delay(1000);
    
    if(sbuffer[0] == 'T'){
      //execute turn
@@ -46,25 +45,29 @@ void loop(){
    }
    
   }
+  delay(500);
   
-  
+  //flush input buffer
+  memset(sbuffer, 0, sizeof(sbuffer));
   
 }
 
 // Turn serial string starts with "T"i.e. T179
-// Convert (0-179) to range of turn radius 30 to 60 degrees on servo
+// Accepts values from 30 to 120
 int turn(char *pulse)
 {
   char temp[3];
   int angle;
   
-  for(int x = 1; x < sizeof(pulse); x++)
+  for(int x = 1; x < 5; x++)
   {
      temp[x-1]=pulse[x];
   }
   
   angle = atoi(temp);
-  angle = map(angle, 0, 179, 30, 60);
+  //angle = map(angle, 0, 179, 30, 60);
+  
+  myservo.write(angle);
   
   return angle;
 }
