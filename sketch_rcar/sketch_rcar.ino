@@ -17,6 +17,7 @@ void setup(){
   //set pin functions
   myservo.attach(SERVO_CTRL);
   myservo.write(90); // set servo to start position
+  pinMode(MOTOR_CTRL, OUTPUT);
   Serial.begin(9600); // default serial baud rate
   
 }
@@ -41,7 +42,7 @@ void loop(){
    }
    else if(sbuffer[0] == 'A'){
     //execute accelerate
-     accelerate(3); 
+     accelerate(sbuffer); 
    }
    
   }
@@ -54,30 +55,36 @@ void loop(){
 
 // Turn serial string starts with "T"i.e. T179
 // Accepts values from 30 to 120
-int turn(char *pulse)
+void turn(char *pulse)
+{
+  int angle;
+  //angle = map(angle, 0, 179, 30, 60);
+  angle = myATOI(pulse);
+  myservo.write(angle);
+}
+
+//accelerate string starts with "A" i.e. A255
+//pwm controlled "analogWrite" speed values are between 0 and 255
+void accelerate(char *pulse)
+{
+  int v;
+  v = myATOI(pulse);
+  if(v >= 0 && v <= 255)
+  {
+    analogWrite(MOTOR_CTRL, v);
+  }
+}
+
+int myATOI(char *str)
 {
   char temp[3];
-  int angle;
   
   for(int x = 1; x < 5; x++)
   {
-     temp[x-1]=pulse[x];
+     temp[x-1]=str[x];
   }
   
-  angle = atoi(temp);
-  //angle = map(angle, 0, 179, 30, 60);
-  
-  myservo.write(angle);
-  
-  return angle;
-}
-
-//accelerate string starts with "A" i.e. A360
-// 0-179 is reverse
-//180-359 is forward
-void accelerate(int pulse)
-{
-  
+  return atoi(temp);
 }
 
 
