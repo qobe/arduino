@@ -59,7 +59,7 @@ void turn(char *pulse)
 {
   int angle;
   //angle = map(angle, 0, 179, 30, 60);
-  angle = myATOI(pulse);
+  angle = parse(pulse);
   myservo.write(angle);
 }
 
@@ -68,14 +68,14 @@ void turn(char *pulse)
 void accelerate(char *pulse)
 {
   int v;
-  v = myATOI(pulse);
+  v = parse(pulse);
   if(v >= 0 && v <= 255)
   {
     analogWrite(MOTOR_CTRL, v);
   }
 }
 
-int myATOI(char *str)
+int parse(char *str)
 {
   char temp[3];
   
